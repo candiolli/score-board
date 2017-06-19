@@ -2,5 +2,8 @@
   "name": "score-board",
   "version": "1.0.0",
   "description": "",
-  "main": "script-score.js"
+  "main": "script-score.js",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
 }
