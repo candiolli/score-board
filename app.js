@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var scoreBoard = require('./score.board.js');
 
-app.get('/score-output', function (req, res) {
+app.get('/score', function (req, res) {
     if (req.query.dir) {
         scoreBoard.readInput(req.query.dir, function(data) {
             console.log(data);
