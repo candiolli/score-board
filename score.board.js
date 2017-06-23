@@ -1,13 +1,14 @@
 var fs = require('fs');
 var readline = require('readline');
+var Score = require('./Score.js');
+var TestCase = require('./TestCase.js');
+var Output = require('./Output.js');
 
 var scoreBoard = module.exports = {
 
     readInput: function (dir) {
         var testCases = [];
-        var testCase = {
-            id : null, scores : []
-        };
+        var testCase = new TestCase(null, []);
 
         var rd = readline.createInterface({
             input: fs.createReadStream(dir + '/input.txt'),
@@ -19,10 +20,7 @@ var scoreBoard = module.exports = {
     
             if (line.length == 1 && testCase.id != line) {
 
-                testCase = {
-                    id : line,
-                    scores : []
-                };
+                testCase = new TestCase(line, []);
 
                 testCases.push(testCase);
 
@@ -34,13 +32,9 @@ var scoreBoard = module.exports = {
                 var time = aux[2];
                 var result = aux[3];
 
-                testCase.scores.push({
-                    people : people,
-                    problem : problem,
-                    time : time,
-                    result : result
-                });
+                var Score = new Score(people, problem, time, result);
 
+                testCase.scores.push(Score);
             }
         });
 
@@ -53,37 +47,30 @@ var scoreBoard = module.exports = {
 
                 testCase.scores.forEach(function(score){
 
-                    var people = {
-                        id : null,
-                        totalProblemas : 0,
-                        totalTime : 0
-                    };
+                    var Output = new Output(null, 0, 0);
 
-                    if (people.id == null || people.id != score.people) {
+                    if (Output.id == null || Output.id != score.people) {
                         var exists = false;
 
                         outputs.forEach(function(ot){
                             if (ot.id == score.people) {
-                                people = ot;
+                                Output = ot;
                                 exists = true;
                             }
                         });
 
                         if (!exists) {
-                            people.id = score.people;
-                            people.totalProblemas = 0;
-                            people.totalTime = 0;
-
-                            outputs.push(people);
+                            Output = new Output(score.people, 0, 0);
+                            outputs.push(Output);
                         }
                     }
 
-                    if (people.id != null) {
+                    if (Output.id != null) {
                         if (score.result == 'C') {
-                            people.totalTime += parseInt(score.time);
-                            people.totalProblemas += 1;
+                            Output.totalTime += parseInt(score.time);
+                            Output.totalProblemas += 1;
                         } else if (score.result == 'I') {
-                            people.totalTime += 20;
+                            Output.totalTime += 20;
                         }
                     }
                     
