@@ -8,6 +8,7 @@ var scoreBoard = module.exports = {
 
     readInput: function (dir) {
         var testCases = [];
+        let scores = [];
         var testCase = new TestCase(null, []);
 
         var rd = readline.createInterface({
@@ -15,74 +16,62 @@ var scoreBoard = module.exports = {
             output: process.stdout,
             console: true
         });
-
+        
         rd.on('line', function(line) {
-    
-            if (line.length == 1 && testCase.id != line) {
-
-                testCase = new TestCase(line, []);
-
-                testCases.push(testCase);
-
-            } else if (line.length > 1 && testCase.id != null) {
-
-                var aux = line.split(' ');
-                var people = aux[0];
-                var problem = aux[1];
-                var time = aux[2];
-                var result = aux[3];
-
-                var Score = new Score(people, problem, time, result);
-
-                testCase.scores.push(Score);
-            }
+            scores.push(function() {
+                if (line.length == 1) {
+                    return new Score(line);
+                } else {
+                    return new Score(null, ...line.split(' '));
+                }
+            })
         });
 
         rd.on('close', function() {
-            var outputs = [];
+            console.log('scores: ', scores);
+            // var outputs = [];
 
-            testCases.forEach(function(testCase){
+            // scores.forEach(function(score){
 
-                outputs = [];
+        //         outputs = [];
 
-                testCase.scores.forEach(function(score){
+        //         testCase.scores.forEach(function(score){
 
-                    var Output = new Output(null, 0, 0);
+        //             var out = new Output(null, 0, 0);
 
-                    if (Output.id == null || Output.id != score.people) {
-                        var exists = false;
+        //             if (out.id == null || out.id != score.people) {
+        //                 var exists = false;
 
-                        outputs.forEach(function(ot){
-                            if (ot.id == score.people) {
-                                Output = ot;
-                                exists = true;
-                            }
-                        });
+        //                 outputs.forEach(function(ot){
+        //                     if (ot.id == score.people) {
+        //                         out = ot;
+        //                         exists = true;
+        //                     }
+        //                 });
 
-                        if (!exists) {
-                            Output = new Output(score.people, 0, 0);
-                            outputs.push(Output);
-                        }
-                    }
+        //                 if (!exists) {
+        //                     outputs.push(new Output(score.people, 0, 0));
+        //                 }
+        //             }
 
-                    if (Output.id != null) {
-                        if (score.result == 'C') {
-                            Output.totalTime += parseInt(score.time);
-                            Output.totalProblemas += 1;
-                        } else if (score.result == 'I') {
-                            Output.totalTime += 20;
-                        }
-                    }
+        //             if (out.id != null) {
+        //                 if (score.result == 'C') {
+        //                     out.totalTime += parseInt(score.time);
+        //                     out.totalProblemas += 1;
+        //                 } else if (score.result == 'I') {
+        //                     out.totalTime += 20;
+        //                 }
+        //             }
                     
-                });
+        //         });
 
-                outputs.forEach(function(t) {
-                    var nameFile = dir + '/output'+testCase.id+'.txt';
-                    fs.unlink(nameFile, function() {
-                        fs.appendFile(nameFile, t.id + ' ' + t.totalProblemas + ' ' + t.totalTime + ' \r\n');
-                    });
-                });
-            });
+        //         outputs.forEach(function(t) {
+        //             var nameFile = dir + '/output'+testCase.id+'.txt';
+        //             fs.unlink(nameFile, function() {
+        //                 fs.appendFile(nameFile, t.id + ' ' + t.totalProblemas + ' ' + t.totalTime + ' \r\n');
+        //             });
+        //         });
+            // });
 
         });
        

@@ -14,5 +14,5 @@ app.get('/score', function (req, res) {
 });
 
 app.listen(3000, function () {
-  console.log('Score Board listening on port 3000!');
+    console.log('Score Board listening on port 3000!');
 });
